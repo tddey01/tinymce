@@ -26,12 +26,12 @@ interface PartialEvent {
 export type EventUtilsEvent<T> = T & {
   type: string;
   target: any;
-  readonly isDefaultPrevented: () => boolean;
-  readonly preventDefault: () => void;
-  readonly isPropagationStopped: () => boolean;
-  readonly stopPropagation: () => void;
-  readonly isImmediatePropagationStopped: () => boolean;
-  readonly stopImmediatePropagation: () => void;
+  isDefaultPrevented: () => boolean;
+  preventDefault: () => void;
+  isPropagationStopped: () => boolean;
+  stopPropagation: () => void;
+  isImmediatePropagationStopped: () => boolean;
+  stopImmediatePropagation: () => void;
 };
 
 /**

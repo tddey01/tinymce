@@ -18,7 +18,7 @@ import ScriptLoader, { ScriptLoaderConstructor } from './dom/ScriptLoader';
 import EditorSelection from './dom/Selection';
 import DomSerializer, { DomSerializerSettings } from './dom/Serializer';
 import Sizzle from './dom/Sizzle';
-import { StyleSheetLoader } from './dom/StyleSheetLoader';
+import { StyleSheetLoader, StyleSheetLoaderSettings } from './dom/StyleSheetLoader';
 import TextSeeker from './dom/TextSeeker';
 import DomTreeWalker, { DomTreeWalkerConstructor } from './dom/TreeWalker';
 import Editor, { EditorConstructor } from './Editor';
@@ -35,17 +35,17 @@ import AstNode from './html/Node';
 import SaxParser, { SaxParserSettings } from './html/SaxParser';
 import Schema, { SchemaSettings } from './html/Schema';
 import HtmlSerializer, { HtmlSerializerSettings } from './html/Serializer';
-import Styles from './html/Styles';
+import Styles, { StylesSettings } from './html/Styles';
 import Writer, { WriterSettings } from './html/Writer';
 import IconManager from './IconManager';
 import NotificationManager from './NotificationManager';
-import { Plugin } from './PluginManager';
+import PluginManager from './PluginManager';
 import Resource from './Resource';
 import Shortcuts, { ShortcutsConstructor } from './Shortcuts';
-import { Theme } from './ThemeManager';
+import ThemeManager from './ThemeManager';
 import UndoManager from './UndoManager';
 import Class from './util/Class';
-import Color from './util/Color';
+import Color, { ColorConstructor } from './util/Color';
 import Delay from './util/Delay';
 import EventDispatcher, { EventDispatcherConstructor } from './util/EventDispatcher';
 import I18n from './util/I18n';
@@ -61,7 +61,7 @@ import VK from './util/VK';
 import XHR from './util/XHR';
 import WindowManager from './WindowManager';
 
-export interface TinyMCE extends EditorManager {
+interface TinyMCE extends EditorManager {
 
   geom: {
     Rect: Rect;
@@ -82,7 +82,7 @@ export interface TinyMCE extends EditorManager {
     JSONRequest: JSONRequestConstructor;
     JSONP: JSONP;
     LocalStorage: Storage;
-    Color: Color;
+    Color: ColorConstructor;
   };
 
   dom: {
@@ -97,13 +97,13 @@ export interface TinyMCE extends EditorManager {
     Serializer: (settings: DomSerializerSettings, editor?: Editor) => DomSerializer;
     ControlSelection: (selection: EditorSelection, editor: Editor) => ControlSelection;
     BookmarkManager: (selection: EditorSelection) => BookmarkManager;
-    Selection: (dom: DOMUtils, win: Window, serializer, editor: Editor) => EditorSelection;
-    StyleSheetLoader: StyleSheetLoader;
+    Selection: (dom: DOMUtils, win: Window, serializer: DomSerializer, editor: Editor) => EditorSelection;
+    StyleSheetLoader: (documentOrShadowRoot: Document | ShadowRoot, settings: StyleSheetLoaderSettings) => StyleSheetLoader;
     Event: EventUtils;
   };
 
   html: {
-    Styles: Styles;
+    Styles: (settings?: StylesSettings, schema?: Schema) => Styles;
     Entities: Entities;
     Node: AstNode;
     Schema: (settings?: SchemaSettings) => Schema;
@@ -130,8 +130,8 @@ export interface TinyMCE extends EditorManager {
   // Global instances
   DOM: DOMUtils;
   ScriptLoader: ScriptLoader;
-  PluginManager: AddOnManager<void | Plugin>;
-  ThemeManager: AddOnManager<Theme>;
+  PluginManager: PluginManager;
+  ThemeManager: ThemeManager;
   IconManager: IconManager;
   Resource: Resource;
 
@@ -156,7 +156,7 @@ export interface TinyMCE extends EditorManager {
   // Legacy browser detection
   isOpera: boolean;
   isWebKit: boolean;
-  isIE: boolean;
+  isIE: false | number;
   isGecko: boolean;
   isMac: boolean;
 }
@@ -261,8 +261,8 @@ const publicApi = {
   // Global instances
   DOM: DOMUtils.DOM,
   ScriptLoader: ScriptLoader.ScriptLoader,
-  PluginManager: AddOnManager.PluginManager,
-  ThemeManager: AddOnManager.ThemeManager,
+  PluginManager,
+  ThemeManager,
   IconManager,
   Resource,
 
@@ -292,4 +292,8 @@ const publicApi = {
   isMac: Env.mac
 };
 
-export const tinymce: TinyMCE = Tools.extend(EditorManager, publicApi);
+const tinymce: TinyMCE = Tools.extend(EditorManager, publicApi);
+export {
+  TinyMCE,
+  tinymce
+};

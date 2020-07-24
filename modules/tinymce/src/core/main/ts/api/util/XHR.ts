@@ -6,7 +6,6 @@
  */
 
 import Delay from './Delay';
-import { NativeEventMap } from './EventDispatcher';
 import Observable from './Observable';
 import Tools from './Tools';
 
@@ -25,8 +24,9 @@ export interface XHRSettings {
   success? (text: string, xhr: XMLHttpRequest, settings: XHRSettings): void;
 }
 
-export interface XHREventMap extends NativeEventMap {
-  'beforeInitialize': { settings: XHRSettings };
+export interface XHREventMap {
+  beforeInitialize: { settings: XHRSettings };
+  beforeSend: { xhr: XMLHttpRequest; settings: XHRSettings };
 }
 
 interface XHR extends Observable<XHREventMap> {

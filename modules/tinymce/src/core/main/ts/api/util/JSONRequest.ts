@@ -6,8 +6,8 @@
  */
 
 import JSON from './JSON';
-import XHR, { XHRSettings } from './XHR';
 import Tools from './Tools';
+import XHR, { XHRSettings } from './XHR';
 
 /**
  * This class enables you to use JSON-RPC to call backend methods.
@@ -54,7 +54,6 @@ export interface JSONRequestArgs extends JSONRequestSettings {
   id?: string;
   method?: string;
   params?: string;
-  url: string;
 }
 
 export interface JSONRequestConstructor {
